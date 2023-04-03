@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\AuthUserController;
 use App\Http\Controllers\User\DashboardUserController;
 use App\Http\Controllers\Readers\ReaderController;
 use App\Http\Controllers\Print\InvoiceController;
+use App\Http\Controllers\Histories\BooksBorrowController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +56,15 @@ Route::prefix('auth/admin')->middleware("auth:admin")->name('admin.')->group(fun
         Route::get('/add', [UsersController::class, 'addUser'])->name('add');
         Route::post('/add', [UsersController::class, 'handleAddUser'])->name('handleAddUser');
     });
+
+    /*Histories*/
+    Route::prefix('/histories')->name('histories.')->group(function (){
+        Route::get('/book',[BooksBorrowController::class,'index'])->name('bookBorrow');
+        Route::post('/book',[SearchController::class,'handleBookBorrow'])->name('handleBookBorrow');
+
+        Route::get('/book-name/{barcode}',[BooksBorrowController::class,'listReader'])->name('listReader');
+    });
+
 });
 
 /*Route Nhân viên*/
@@ -82,6 +92,7 @@ Route::prefix('auth/user')->middleware("auth:user")->name('user.')->group(functi
     /*Print*/
     Route::prefix('/print')->name('print.')->group(function (){
        Route::get('/bill-borrow',[InvoiceController::class,'bookBill'])->name('bookBill');
+       Route::get('/penalty',[InvoiceController::class,'penaltyBill'])->name('penaltyBill');
     });
 });
 

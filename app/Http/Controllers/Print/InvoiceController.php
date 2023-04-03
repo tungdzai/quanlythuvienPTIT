@@ -35,4 +35,23 @@ class InvoiceController extends Controller
         $pdf->loadView('print.invoice', $data);
         return $pdf->stream('danh_sach_san_pham.pdf');
     }
+
+    public function penaltyBill(Request $request)
+    {
+        $reader_id = $request->get('reader_id');
+        $borrowing_id = $request->get('borrowing_id');
+        if (!empty($reader_id) && !empty($borrowing_id)) {
+            $reader = $this->readersRepository->infoReader($reader_id);
+            $penalty_lists = $this->borrowingsRepository->penaltyReader($borrowing_id);
+        }
+        if (count($penalty_lists) > 0) {
+            $data['reader'] = $reader;
+            $data['penalty_lists'] = $penalty_lists;
+        }
+//        dd($data);
+        $pdf = app(PDF::class);
+        $pdf->loadView('print.penalty', $data);
+        return $pdf->stream('danh_sach_san_pham.pdf');
+    }
+
 }

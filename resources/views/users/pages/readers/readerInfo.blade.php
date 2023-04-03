@@ -4,8 +4,6 @@
         <!-- Page Heading -->
         <div class="readerInfo border-right px-3 ">
             <h5>Thông tin đọc giả</h5>
-            {{--            @dd($readerInfo['reader']->readers_id)--}}
-            {{--            @dd($readerInfo['reader']->borrowing_id)--}}
             <div class="mb-1">
                 <label for="title" class="form-label"> Họ và tên </label>
                 <p class="form-control">{{$readerInfo['reader']->readers_name}}</p>
@@ -64,6 +62,10 @@
                 <a href="{{route('user.print.bookBill',['reader_id'=>$readerInfo['reader']->readers_id,'borrowing_id'=>$readerInfo['reader']->borrowing_id])}}"
                    class="btn btn-success">In hóa đơn</a>
             </div>
+            <div class="mb-3">
+                <a href="{{route('user.print.penaltyBill',['reader_id'=>$readerInfo['reader']->readers_id,'borrowing_id'=>$readerInfo['reader']->borrowing_id])}}"
+                   class="btn btn-danger">In phiếu phạt </a>
+            </div>
         </div>
         <div class="borrowingDetail flex-grow-1 px-2">
             <h5 class="text-center">Danh sách sách đang mượn</h5>
@@ -76,15 +78,13 @@
                     <th scope="col">Số lượng</th>
                     <th scope="col">Ngày mượn</th>
                     <th scope="col">Hạn trả</th>
-                    <th scope="col">Ngày trả</th>
-                    <th scope="col">Phí phạt</th>
                 </tr>
                 </thead>
                 <tbody>
                 @if(count($readerInfo['borrowingDetail']) == 0)
                     <tr class="text-center">
                         <td colspan="6">Chưa có sách nào được mượn !</td>
-                    </tr>
+                    </tr>x`
                 @else
                     @foreach($readerInfo['borrowingDetail'] as $index => $borrowingDetail)
                         <tr class="text-center">
@@ -94,8 +94,6 @@
                             <td>{{$borrowingDetail->borrowing_details_quantity}}</td>
                             <td>{{\Carbon\Carbon::parse($borrowingDetail->borrowing_details_borrowed_date)->format('d-m-Y')}}</td>
                             <td>{{\Carbon\Carbon::parse($borrowingDetail->borrowing_details_due_date)->format('d-m-Y')}}</td>
-                            <td>{{$borrowingDetail->borrowing_details_returned_date}}</td>
-                            <td>{{$borrowingDetail->borrowing_details_penalty_fee}}</td>
                         </tr>
                     @endforeach
                 @endif

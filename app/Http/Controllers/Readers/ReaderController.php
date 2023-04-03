@@ -52,6 +52,7 @@ class ReaderController extends Controller
         $barcode_reader = session('barcode_reader');
         $reader = $this->readersRepository->getReader($barcode_reader, null);
         $data['readerInfo'] = $reader;
+//        dd($reader);
         session()->put('countBooks', count($reader['borrowingDetail']));
         return view('users.pages.readers.readerInfo', $data);
     }
@@ -101,7 +102,7 @@ class ReaderController extends Controller
         $dateTime = Carbon::parse($today_date);
         $returned_date = $dateTime->toDateString();
         $status_return_book = $this->readersRepository->updateBorrowingDetail($barcode_reader, $barcode_book, $returned_date);
-        if ($status_return_book) {
+        if (!empty($status_return_book)) {
             $statusBook = $this->readersRepository->getReader($barcode_reader, $barcode_book);
         }
         session()->put('returnBook', $statusBook);
@@ -121,15 +122,18 @@ class ReaderController extends Controller
 
             $statusReturnBook = $this->borrowingsRepository->deleteBook($borrowing_id, $book_id);
             if ($statusReturnBook) {
-                session()->flash('successDelete','Trả sách thành công');
+                session()->flash('successDelete', 'Trả sách thành công');
                 return redirect()->route('user.book.bookList');
             }
 
         } else {
             // Quá hạn
-            $penalty_fee=($borrowingReturn['book_price'])/5;
-            $status_penalty=$this->borrowingsRepository->penalty_fee($borrowing_id,$book_id,$penalty_fee);
-            dd($status_penalty);
+            $penalty_fee = ($borrowingReturn['book_price']) / 5;
+            $status_penalty = $this->borrowingsRepository->penalty_fee($borrowing_id, $book_id, $penalty_fee);
+            if ($status_penalty) {
+                session()->flash('successDelete', 'Trả sách thành công');
+                return redirect()->route('user.book.bookList');
+            }
         }
 
     }

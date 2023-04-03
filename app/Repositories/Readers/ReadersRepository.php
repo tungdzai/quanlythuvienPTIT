@@ -48,6 +48,7 @@ class ReadersRepository implements ReadersRepositoryInterface
                 ->join('borrowings', 'borrowing_details.borrowing_id', '=', 'borrowings.id')
                 ->join('readers', 'borrowings.reader_id', '=', 'readers.id')
                 ->where('readers.barcode', $barcode_reader)
+                ->where('borrowing_details.flag_delete', 0)
                 ->get();
             return [
                 'reader' => $reader,
